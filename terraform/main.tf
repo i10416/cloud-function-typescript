@@ -1,10 +1,12 @@
 variable "GOOGLE_CREDENTIALS_PATH" {}
 variable "PROJECT_ID" {}
 variable "DEFAULT_REGION" {}
+variable "DB_PASSWORD" {}
 
 
 resource "google_cloudfunctions_function" "scheduled_function" {
-  name                  = "sample scheduled function"
+  region                = var.DEFAULT_REGION
+  name                  = "sample-scheduled-function"
   description           = "sample scheduled pubsub trigger function"
   runtime               = "nodejs14"
   available_memory_mb   = 128
@@ -27,6 +29,7 @@ resource "google_cloudfunctions_function" "scheduled_function" {
 
 
 resource "google_cloudfunctions_function" "http_function" {
+  region                = var.DEFAULT_REGION
   name                  = "my-http-function"
   description           = "sample http trigger function"
   runtime               = "nodejs14"

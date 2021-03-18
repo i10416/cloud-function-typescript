@@ -1,11 +1,11 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-state-store"
+    bucket = "sample-terraform-state-store"
   }
 }
 
-resource "google_storage_bucket" "terraform-state-store" {
-  name          = "terraform-state-store"
+resource "google_storage_bucket" "sample-terraform-state-store" {
+  name          = "sample-terraform-state-store"
   location      = var.DEFAULT_REGION
   storage_class = "REGIONAL"
 

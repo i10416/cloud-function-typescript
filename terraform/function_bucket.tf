@@ -1,8 +1,8 @@
 
 data "archive_file" "function_archive" {
   type        = "zip"
-  source_dir  = "dist"
-  output_path = "../dist/index.zip"
+  source_dir  = "${path.module}/../dist"
+  output_path = "${path.module}/../dist/index.zip"
 }
 resource "google_storage_bucket" "bucket" {
   name = "<GLOBAL_UNIQUE_BACKET_NAME>"
