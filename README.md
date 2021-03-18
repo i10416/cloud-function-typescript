@@ -109,7 +109,8 @@ gcloud config set project [PROJECT_ID]
 
 ```bash
 gcloud functions deploy <YOUR_FUNCTION_NAME> \
---runtime nodejs14 --trigger-http --allow-unauthenticated
+--runtime nodejs14 --region <YOUR_FUNCTION_REGION> --trigger-http --allow-unauthenticated \
+--set-env-vars GCP_PROJECT=$(gcloud config get-value project)
 ```
 
 #### http trigger function のテスト
@@ -131,7 +132,18 @@ gcloud pubsub topics create MY_TOPIC
 
 ※ `--trigger-topic` オプションで指定したトピックが存在しない場合、新しくその名前のトピックが作られる。
 ```bash
-gcloud functions deploy <SUBSCRIBER_FUNC_NAME> --trigger-topic MY_TOPIC --runtime nodejs14
+gcloud functions deploy <SUBSCRIBER_FUNC_NAME> --trigger-topic MY_TOPIC --runtime nodejs14 \
+--region <YOUR_FUNC_REGION> --set-env-vars GCP_PROJECT=$(gcloud config get-value project)
+
+```
+
+#### cloud scheduler の設定
+```bash
+gcloud beta scheduler jobs create pubsub SCHEDULER_NAME \
+--schedule '<cron schedule>' \
+--topic MY_TOPIC \
+--message-body '<MESSAGE>' \
+--time-zone 'Asia/Tokyo'
 ```
 
 #### pubsub trigger function のテスト
@@ -155,8 +167,11 @@ gcloud functions logs read <YOUR_PUBLISHER_FUNCTION_NAME>
 ```
 
 
-## Function の削除
+## リソース の削除
 
-```
+```bash
 gcloud functions delete <YOUR_FUNCTION_NAME> 
+gcloud beta scheduler jobs delete <YOUR_SCHEDULER_NAME>
+gcloud pubsub topics delete <YOUR_TOPIC_NAME>
+gcloud beta sql instances delete <YOUR_INSTANCE_NAME>
 ```
