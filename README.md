@@ -85,7 +85,21 @@ curl -d "@example/event_example.json" \
 npm run compile
 ```
 
-## Deploy
+## terraform
+
+### install terraform
+
+```bash
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+sudo apt-get update && sudo apt-get install terraform
+```
+
+In case GPG error:
+See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
+
 
 ### gcloud のアカウントを確認・設定する
 
@@ -96,12 +110,59 @@ gcloud config list
 ```
 gcloud auth login
 ```
+
 ### gcloud のプロジェクトを切り替える
 
 ```bash
 gcloud config set project [PROJECT_ID]
 ```
 
+### create service account for terraform
+
+```bash
+gcloud iam service-accounts create terraform-serviceaccount \
+  --display-name "Account for Terraform"
+```
+
+### create bucket BEFORE `terraform init` to avoid chicken-egg problem
+
+
+### create service account and configure policy
+
+```bash
+gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
+  --member serviceAccount:terraform-serviceaccount@$(gcloud config get-value project).iam.gserviceaccount.com \
+  --role roles/editor
+```
+
+### generate credentials as account.json
+
+```bash
+ gcloud iam service-accounts keys create ./terraform/account.json \
+  --iam-account terraform-serviceaccount@$(gcloud config get-value project).iam.gserviceaccount.com
+```
+
+### before deploy
+
+```bash
+terraform plan
+```
+
+
+## Deploy
+
+```bash
+npm run compile
+terraform apply
+```
+
+## resources の削除
+
+```bash
+terraform destroy
+```
+
+## Deploy(deprecated)
 ### http trigger function をデプロイする
 
 
