@@ -126,6 +126,11 @@ gcloud auth login
 gcloud config set project [PROJECT_ID]
 ```
 
+### api を有効にする
+```bash
+gcloud services enable sqladmin.googleapis.com
+gcloud services enable cloudfunctions.googleapis.com
+```
 ### create service account for terraform
 
 ```bash
@@ -133,9 +138,11 @@ gcloud iam service-accounts create terraform-serviceaccount \
   --display-name "Account for Terraform"
 ```
 
-### create bucket BEFORE `terraform init` to avoid chicken-egg problem
+### create GCP bucket BEFORE `terraform init` to avoid the chicken-egg problem
 
-
+```bash
+gsutil mb gs://BUCKET_NAME
+```
 ### configure service account policy
 
 ```bash
@@ -154,6 +161,7 @@ gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
 ### init terraform
 
 ```bash
+cd terraform
 terraform init
 terraform plan
 ```
