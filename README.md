@@ -7,6 +7,7 @@ This repository is template for cloud functions in TypeScript and some additiona
 - python: python should be installed in your environment in order to install gcloud CLI.
 - terraform: terraform CLI should be installed to configure, deploy and destroy GCP resources.
 - node14.x: nodejs 14.x is required to compile `src/**/*.ts`
+- gsutil: gsutil must be installed to create bucket.
 ### getting started
 
 ```bash
