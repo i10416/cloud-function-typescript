@@ -15,6 +15,10 @@ cd repo
 check if python is already downloaded.
 
 ```bash
+cd ~
+```
+
+```bash
 python --version
 ```
 
@@ -24,7 +28,9 @@ download tar.gz
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-329.0.0-linux-x86_64.tar.gz
 ```
 
-```
+unzip tar.gz and init client SDK
+
+```bash
 tar -zxvf google-cloud-sdk-329.0.0-linux-x86_64.tar.gz
 ./google-cloud-sdk/install.sh
 ./google-cloud-sdk/bin/gcloud init
@@ -71,6 +77,12 @@ curl -d "@example/event_example.json" \
   -H "Ce-Source: true" \
   -H "Ce-Id: true" \
   -H "Content-Type: application/json" \
+```
+
+## compile
+
+```bash
+npm run compile
 ```
 
 ## Deploy
