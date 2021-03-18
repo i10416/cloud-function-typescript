@@ -6,6 +6,11 @@
 dist/
 public/
 
+terraform/account.json
+terraform/.terraform
+terraform/.terraform.lock.hcl
+
+
 
 .DS_Store
 .AppleDouble
