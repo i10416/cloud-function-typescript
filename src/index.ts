@@ -17,6 +17,5 @@ export const helloHTTPFunction = async (req: Request, res: Response) => {
 /// cloud scheduler から PubSubJson に対応する json を payload として渡す
 export const helloPubSubSubscriber = async (json: PubSubJson, context: PubSubContext) => {
   const data = Buffer.from(json.message.data, "base64").toString();
-  sqlAdmin.instances.export
 }
 
