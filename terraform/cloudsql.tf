@@ -2,7 +2,6 @@
 resource "google_sql_database_instance" "mysql" {
   name             = "sample-db-instance"
   database_version = "MYSQL_8_0"
-  project          = var.PROJECT_ID
   region           = var.DEFAULT_REGION
 
   settings {

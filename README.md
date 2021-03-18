@@ -1,8 +1,12 @@
 
 # About
-
+This repository is template for cloud functions in TypeScript and some additional GCP infrastructure resources.
 ## Setup
 
+### requirements
+- python: python should be installed in your environment in order to install gcloud CLI.
+- terraform: terraform CLI should be installed to configure, deploy and destroy GCP resources.
+- node14.x: nodejs 14.x is required to compile `src/**/*.ts`
 ### getting started
 
 ```bash
@@ -13,14 +17,15 @@ cd repo
 ### Install gcloud cli tool
 
 check if python is already downloaded.
+```bash
+python --version
+```
+
 
 ```bash
 cd ~
 ```
 
-```bash
-python --version
-```
 
 download tar.gz
 
@@ -39,8 +44,26 @@ tar -zxvf google-cloud-sdk-329.0.0-linux-x86_64.tar.gz
 ### Install dependencies
 
 ```bash
+node -v
+# => v14.x.x
+
 npm install
 ```
+
+### install terraform
+
+```bash
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+sudo apt-get update && sudo apt-get install terraform
+
+terraform --help
+```
+
+In case GPG error:
+See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
 
 ## Debug
 
@@ -79,26 +102,12 @@ curl -d "@example/event_example.json" \
   -H "Content-Type: application/json" \
 ```
 
-## compile
+## before deploy
+### compile
 
 ```bash
 npm run compile
 ```
-
-## terraform
-
-### install terraform
-
-```bash
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-
-sudo apt-get update && sudo apt-get install terraform
-```
-
-In case GPG error:
-See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
 
 
 ### gcloud のアカウントを確認・設定する
@@ -111,8 +120,8 @@ gcloud config list
 gcloud auth login
 ```
 
-### gcloud のプロジェクトを切り替える
-
+### gcloud のプロジェクトを切り替える(optional)
+もし意図していないプロジェクトを使っていたら以下のコマンドでプロジェクトを切り替える。
 ```bash
 gcloud config set project [PROJECT_ID]
 ```
@@ -127,7 +136,7 @@ gcloud iam service-accounts create terraform-serviceaccount \
 ### create bucket BEFORE `terraform init` to avoid chicken-egg problem
 
 
-### create service account and configure policy
+### configure service account policy
 
 ```bash
 gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
@@ -142,9 +151,10 @@ gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
   --iam-account terraform-serviceaccount@$(gcloud config get-value project).iam.gserviceaccount.com
 ```
 
-### before deploy
+### init terraform
 
 ```bash
+terraform init
 terraform plan
 ```
 
@@ -152,7 +162,6 @@ terraform plan
 ## Deploy
 
 ```bash
-npm run compile
 terraform apply
 ```
 
