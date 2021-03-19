@@ -72,6 +72,17 @@ terraform --help
 In case GPG error:
 See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
 
+#### NOTE
+
+##### debug
+
+
+```bash
+# LOGLEVEL= TRACE | DEBUG | INFO | WARN | ERROR
+TF_LOG=<LOGLEVEL> terraform <command>
+
+```
+
 #### for macOS
 
 ```bash
