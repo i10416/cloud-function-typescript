@@ -1,6 +1,8 @@
 
 # About
 This repository is template for cloud functions in TypeScript and some additional GCP infrastructure resources.
+
+You can manage GCP infrastructures by terraform in `/terraform` directory.
 ## Setup
 
 ### requirements
@@ -53,6 +55,7 @@ npm install
 
 ### install terraform
 
+#### for linux
 ```bash
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 
@@ -60,11 +63,27 @@ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(l
 
 sudo apt-get update && sudo apt-get install terraform
 
+# restart bash and check if terraform is successfully installed.
+terraform --version
+# ask how to use terraform cli
 terraform --help
 ```
 
 In case GPG error:
 See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
+
+#### for macOS
+
+```bash
+brew install tfenv
+tfenv -v
+# => tfenv 1.0.1
+
+# list available terraform versions
+tfenv list
+tfenv install x.x.x
+tfenv use x.x.x
+```
 
 ## Debug
 
@@ -113,14 +132,19 @@ npm run compile
 
 ### gcloud のアカウントを確認・設定する
 
-```
-gcloud config list
-```
 
-```
+```bash
 gcloud auth login
 ```
 
+```bash
+gcloud config list
+```
+
+#### create a project(optional) 
+```bash
+gcloud projects create <project_name>
+```
 ### gcloud のプロジェクトを切り替える(optional)
 もし意図していないプロジェクトを使っていたら以下のコマンドでプロジェクトを切り替える。
 ```bash
@@ -179,6 +203,8 @@ gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
 ```bash
 cd terraform
 terraform init
+terraform validate
+terraform fmt
 terraform plan
 ```
 
@@ -189,6 +215,13 @@ terraform plan
 terraform apply
 ```
 
+## check resources
+
+```bash
+gcloud beta scheduler jobs list
+gcloud functions list
+gcloud pubsub topics list
+```
 ## resources の削除
 
 ```bash
