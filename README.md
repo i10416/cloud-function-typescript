@@ -4,10 +4,10 @@ This repository is template for cloud functions in TypeScript and some additiona
 ## Setup
 
 ### requirements
-- python: python should be installed in your environment in order to install gcloud CLI.
-- terraform: terraform CLI should be installed to configure, deploy and destroy GCP resources.
+- python: python is rquired in order to install gcloud CLI.
+- terraform: terraform CLI is required to configure, deploy and destroy GCP resources.
 - node14.x: nodejs 14.x is required to compile `src/**/*.ts`
-- gsutil: gsutil must be installed to create bucket.
+- gsutil: gsutil is required to create bucket.
 ### getting started
 
 ```bash
@@ -134,9 +134,11 @@ gcloud services enable cloudfunctions.googleapis.com
 ```
 ### create service account for terraform
 
+Create a service account for terraform named `YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME`.
+
 ```bash
-gcloud iam service-accounts create terraform-serviceaccount \
-  --display-name "Account for Terraform"
+gcloud iam service-accounts create <YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME> \
+  --display-name "<DISPLAY NAME>"
 ```
 
 ### create GCP bucket BEFORE `terraform init` to avoid the chicken-egg problem
@@ -144,11 +146,24 @@ gcloud iam service-accounts create terraform-serviceaccount \
 ```bash
 gsutil mb gs://BUCKET_NAME
 ```
+
+change `terraform/backend.tf`
+
+```diff
+terraform {
+  backend "gcs" {
+-    bucket = "sample-terraform-state-store"
++    bucket = "<BUCKET_NAME>"
+  }
+}
+
+```
+
 ### configure service account policy
 
 ```bash
 gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
-  --member serviceAccount:terraform-serviceaccount@$(gcloud config get-value project).iam.gserviceaccount.com \
+  --member serviceAccount:<YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME>@$(gcloud config get-value project).iam.gserviceaccount.com \
   --role roles/editor
 ```
 
@@ -156,7 +171,7 @@ gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
 
 ```bash
  gcloud iam service-accounts keys create ./terraform/account.json \
-  --iam-account terraform-serviceaccount@$(gcloud config get-value project).iam.gserviceaccount.com
+  --iam-account <YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME>@$(gcloud config get-value project).iam.gserviceaccount.com
 ```
 
 ### init terraform
