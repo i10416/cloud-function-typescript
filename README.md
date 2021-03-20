@@ -4,6 +4,8 @@ This repository is a template for cloud functions in TypeScript and some additio
 
 This template is useful in such a case as you want to recurringly start and stop cloudsql instances so that you can save money.
 
+If you want to control GCP resources from cloud functions, see https://github.com/googleapis/google-api-nodejs-client 
+
 You can set up and manage GCP infrastructures by terraform in `/terraform` directory.
 ## Setup
 
@@ -101,11 +103,13 @@ TF_LOG=<LOGLEVEL> terraform <command>
 ## Debug
 
 `@google-cloud/functions-framework` helps developers locally debug and test cloud functions. `npx @google-cloud/functions-framework` boots a cloud functions emulator and stdout logs are displayed in the bash window where the emulator is running.
+
+About functions-framework, see https://github.com/GoogleCloudPlatform/functions-framework-nodejs
 ### http trigger function
 
 ```
 npx @google-cloud/functions-framework --target=helloHTTPFunction --source dist
-curl -X GET http://localhost:8080/helloHTTPFunction
+curl -X GET http://localhost:8080
 ```
 
 ### event trigger function
