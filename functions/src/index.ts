@@ -18,4 +18,3 @@ export const helloHTTPFunction = async (req: Request, res: Response) => {
 export const helloPubSubSubscriber = async (json: PubSubJson, context: PubSubContext) => {
   const data = Buffer.from(json.message.data, "base64").toString();
 }
-

@@ -1,19 +1,13 @@
-resource "random_id" "bucket_suffix" {
-  byte_length = 8
-}
-
 data "archive_file" "function_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../dist"
-  output_path = "${path.module}/../dist/index.zip"
+  source_dir  = "${path.module}/../functions/dist"
+  output_path = "${path.module}/../dist/functions.zip"
+}
+resource "random_id" "function_bucket_name_suffix" {
+  byte_length = 4
 }
 resource "google_storage_bucket" "bucket" {
-  name = "bucket-name-${random_id.bucket_suffix.hex}"
-  lifecycle {
-    ignore_changes = [
-      name
-    ]
-    }
+  name = "sample-function-bucket-${random_id.function_bucket_name_suffix.hex}"
 }
 
 resource "google_storage_bucket_object" "archive" {

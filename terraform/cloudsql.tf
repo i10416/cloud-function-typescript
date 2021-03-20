@@ -1,8 +1,11 @@
-
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
 resource "google_sql_database_instance" "mysql" {
-  name             = "sample-db-instance"
-  database_version = "MYSQL_8_0"
-  region           = var.DEFAULT_REGION
+  name                = "sample-db-instance-${random_id.db_name_suffix.hex}"
+  database_version    = "MYSQL_8_0"
+  region              = var.DEFAULT_REGION
+  deletion_protection = false
 
   settings {
     user_labels = {
@@ -10,6 +13,9 @@ resource "google_sql_database_instance" "mysql" {
     }
     tier = "db-f1-micro"
   }
+  depends_on = [
+    google_project_service.computeapi
+  ]
 }
 
 resource "google_sql_database" "database" {

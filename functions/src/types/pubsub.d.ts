@@ -1,4 +1,4 @@
-/// See https://cloud.google.com/functions/docs/writing/background#function_parameters
+// See https://cloud.google.com/functions/docs/writing/background#function_parameters
 
 declare interface PubSubJson {
   message: PubSubMessage,

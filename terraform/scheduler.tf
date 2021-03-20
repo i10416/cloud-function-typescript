@@ -16,4 +16,7 @@ resource "google_cloud_scheduler_job" "sample_scheduler" {
     topic_name = google_pubsub_topic.sample_topic.id
     data       = base64encode("{\"message\":\"xxx\",\"data\":\"xxx\"}")
   }
+  depends_on = [
+    google_project_service.schedulerapi
+  ]
 }
