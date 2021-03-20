@@ -1,12 +1,14 @@
 
 # About
-This repository is template for cloud functions in TypeScript and some additional GCP infrastructure resources.
+This repository is a template for cloud functions in TypeScript and some additional GCP infrastructure resources.
 
-You can manage GCP infrastructures by terraform in `/terraform` directory.
+This template is useful in such a case as you want to recurringly start and stop cloudsql instances so that you can save money.
+
+You can set up and manage GCP infrastructures by terraform in `/terraform` directory.
 ## Setup
 
 ### requirements
-- python: python is rquired in order to install gcloud CLI.
+- python: python is rquired to install gcloud CLI.
 - terraform: terraform CLI is required to configure, deploy and destroy GCP resources.
 - node14.x: nodejs 14.x is required to compile `src/**/*.ts`
 - gsutil: gsutil is required to create bucket.
@@ -19,7 +21,7 @@ cd repo
 
 ### Install gcloud cli tool
 
-check if python is already downloaded.
+check if python is already installed.
 ```bash
 python --version
 ```
@@ -49,6 +51,8 @@ tar -zxvf google-cloud-sdk-329.0.0-linux-x86_64.tar.gz
 ```bash
 node -v
 # => v14.x.x
+npm -v
+# 6.14.x
 
 npm install
 ```
@@ -71,18 +75,6 @@ terraform --help
 
 In case GPG error:
 See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
-
-#### NOTE
-
-##### debug
-
-
-```bash
-# LOGLEVEL= TRACE | DEBUG | INFO | WARN | ERROR
-TF_LOG=<LOGLEVEL> terraform <command>
-
-```
-
 #### for macOS
 
 ```bash
@@ -96,16 +88,27 @@ tfenv install x.x.x
 tfenv use x.x.x
 ```
 
+#### NOTE
+
+##### debug
+
+```bash
+# LOGLEVEL= TRACE | DEBUG | INFO | WARN | ERROR
+TF_LOG=<LOGLEVEL> terraform <command>
+
+```
+
 ## Debug
 
+`@google-cloud/functions-framework` helps developers locally debug and test cloud functions. `npx @google-cloud/functions-framework` boots a cloud functions emulator and stdout logs are displayed in the bash window where the emulator is running.
 ### http trigger function
 
 ```
 npx @google-cloud/functions-framework --target=helloHTTPFunction --source dist
+curl -X GET http://localhost:8080/helloHTTPFunction
 ```
 
 ### event trigger function
-以下のコマンドでエミュレータを起動した後、別のタブからcurl で event の json を post する。 `console.log` は エミュレータが実行されているコンソールに出力される。
 
 ```
 npx @google-cloud/functions-framework --target=helloPubSubSubscriber --signature-type=event  --source dist
@@ -121,16 +124,6 @@ curl -d "@example/event_example.json" \
   -H "Content-Type: application/json" \
   http://localhost:8080
 
-```
-
-リクエストヘッダに↓のパラメタが付与されている場合、helloPubSubSubscriber の 引数 data には `-d` で渡された json object が、`context` には、`{ type: 'true', specversion: 'true', source: 'true', id: 'true' }` が入る。
-
-```bash
--H "Ce-Type: true" \
-  -H "Ce-Specversion: true" \
-  -H "Ce-Source: true" \
-  -H "Ce-Id: true" \
-  -H "Content-Type: application/json" \
 ```
 
 ## before deploy
@@ -156,20 +149,20 @@ gcloud config list
 ```bash
 gcloud projects create <project_name>
 ```
-### gcloud のプロジェクトを切り替える(optional)
+### switch gcloud project(optional)
 もし意図していないプロジェクトを使っていたら以下のコマンドでプロジェクトを切り替える。
 ```bash
 gcloud config set project [PROJECT_ID]
 ```
 
-### api を有効にする
+### enable APIs
 ```bash
 gcloud services enable sqladmin.googleapis.com
 gcloud services enable cloudfunctions.googleapis.com
 ```
-### create service account for terraform
+### create a service account for terraform if not exists
 
-Create a service account for terraform named `YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME`.
+Run command below to create a service account for terraform named `YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME`.
 
 ```bash
 gcloud iam service-accounts create <YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME> \
@@ -179,10 +172,10 @@ gcloud iam service-accounts create <YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME> \
 ### create GCP bucket BEFORE `terraform init` to avoid the chicken-egg problem
 
 ```bash
-gsutil mb gs://BUCKET_NAME
+gsutil mb gs://<BUCKET_NAME>
 ```
 
-change `terraform/backend.tf`
+Change `terraform/backend.tf`
 
 ```diff
 terraform {
@@ -233,83 +226,37 @@ gcloud beta scheduler jobs list
 gcloud functions list
 gcloud pubsub topics list
 ```
-## resources の削除
+
+#### テスト環境
+
 
 ```bash
-terraform destroy
-```
+# http
+npx @google-cloud/functions-framework --target=helloWorld
 
-## Deploy(deprecated)
-### http trigger function をデプロイする
+curl -X GET http://localhost:8080
 
-
-※ `--allow-unauthenticated` はオプショナルなフラグ.
-
-```bash
-gcloud functions deploy <YOUR_FUNCTION_NAME> \
---runtime nodejs14 --region <YOUR_FUNCTION_REGION> --trigger-http --allow-unauthenticated \
---set-env-vars GCP_PROJECT=$(gcloud config get-value project)
-```
-
-#### http trigger function のテスト
-
-```bash
-curl "https://<REGION>-<PROJECT_ID>.cloudfunctions.net/<YOUR_FUNCTON_NAME>" 
-```
-
-
-### pubsub trigger function をデプロイする
-
-Topic の作成
-
-```bash
-gcloud pubsub topics create MY_TOPIC
-```
-
-関数のデプロイ
-
-※ `--trigger-topic` オプションで指定したトピックが存在しない場合、新しくその名前のトピックが作られる。
-```bash
-gcloud functions deploy <SUBSCRIBER_FUNC_NAME> --trigger-topic MY_TOPIC --runtime nodejs14 \
---region <YOUR_FUNC_REGION> --set-env-vars GCP_PROJECT=$(gcloud config get-value project)
-
-```
-
-#### cloud scheduler の設定
-```bash
-gcloud beta scheduler jobs create pubsub SCHEDULER_NAME \
---schedule '<cron schedule>' \
---topic MY_TOPIC \
---message-body '<MESSAGE>' \
---time-zone 'Asia/Tokyo'
-```
-
-#### pubsub trigger function のテスト
-
-
-##### テスト環境
-
-```bash
+# pubsub
 gcloud functions call <YOUR_PUBLISHER_FUNCTION_NAME> --data '{"topic":"MY_TOPIC","message":"Hello World!"}'
 ```
 
-##### 本番環境
+#### 本番環境
 ```bash
+# http trigger
+curl "https://<REGION>-<PROJECT_ID>.cloudfunctions.net/<YOUR_FUNCTON_NAME>" 
+
+# pubsub trigger
 curl https://<FUNCTION_REGION>-<GCP_PROJECT_ID>.cloudfunctions.net/<YOUR_PUBLISHER_FUNCTION_NAME> -X POST  -d "{\"topic\": \"PUBSUB_TOPIC\", \"message\":\"YOUR_MESSAGE\"}" -H "Content-Type: application/json"
 ```
 
+## check logs
 
-ログのチェック
-```
+```bash
 gcloud functions logs read <YOUR_PUBLISHER_FUNCTION_NAME>
 ```
 
-
-## リソース の削除
+## delete resources
 
 ```bash
-gcloud functions delete <YOUR_FUNCTION_NAME> 
-gcloud beta scheduler jobs delete <YOUR_SCHEDULER_NAME>
-gcloud pubsub topics delete <YOUR_TOPIC_NAME>
-gcloud beta sql instances delete <YOUR_INSTANCE_NAME>
+terraform destroy
 ```
