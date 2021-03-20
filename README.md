@@ -92,7 +92,7 @@ tfenv use x.x.x
 
 #### NOTE
 
-##### debug
+##### debug terraform
 
 ```bash
 # LOGLEVEL= TRACE | DEBUG | INFO | WARN | ERROR
@@ -237,6 +237,15 @@ terraform plan
 
 ```bash
 terraform apply
+```
+
+## manage terraform state
+
+```bash
+# just pull default.state
+terraform state pull
+# pull and write the state to tmp.tfstate
+terraform state pull > tmp.tfstate
 ```
 
 ## check resources
