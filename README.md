@@ -211,6 +211,12 @@ And then export path to account.json.
 export GOOGLE_APPLICATION_CREDENTIALS=path/to/terraform/account.json
 ```
 
+### build functions
+```bash
+cd functions
+npm run build
+```
+
 ### init terraform
 
 ```bash

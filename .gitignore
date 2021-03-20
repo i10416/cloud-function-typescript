@@ -64,6 +64,8 @@ coverage
 bower_components
 .lock-wscript
 build/Release
+functions/dist
+functions/node_modules/
 node_modules/
 jspm_packages/
 typings/
