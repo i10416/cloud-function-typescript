@@ -105,6 +105,11 @@ TF_LOG=<LOGLEVEL> terraform <command>
 `@google-cloud/functions-framework` helps developers locally debug and test cloud functions. `npx @google-cloud/functions-framework` boots a cloud functions emulator and stdout logs are displayed in the bash window where the emulator is running.
 
 About functions-framework, see https://github.com/GoogleCloudPlatform/functions-framework-nodejs
+
+
+### edit functions
+
+Edit functions at the `/functions/src/` directory. Note that functions entry file must be `index.ts` or `functions.ts`.
 ### http trigger function
 
 ```bash
