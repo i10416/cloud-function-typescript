@@ -107,18 +107,18 @@ TF_LOG=<LOGLEVEL> terraform <command>
 About functions-framework, see https://github.com/GoogleCloudPlatform/functions-framework-nodejs
 ### http trigger function
 
-```
+```bash
 npx @google-cloud/functions-framework --target=helloHTTPFunction --source dist
 curl -X GET http://localhost:8080
 ```
 
 ### event trigger function
 
-```
+```bash
 npx @google-cloud/functions-framework --target=helloPubSubSubscriber --signature-type=event  --source dist
 ```
 
-```
+```bash
 curl -d "@example/event_example.json" \
   -X POST \
   -H "Ce-Type: true" \
@@ -204,6 +204,11 @@ gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
 ```bash
  gcloud iam service-accounts keys create ./terraform/account.json \
   --iam-account <YOUR_TERRAFORM_SERVICE_ACCOUNT_NAME>@$(gcloud config get-value project).iam.gserviceaccount.com
+```
+And then export path to account.json.
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=path/to/terraform/account.json
 ```
 
 ### init terraform
