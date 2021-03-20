@@ -67,7 +67,7 @@ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 
-sudo apt-get update && sudo apt-get install terraform
+sudo apt update && sudo apt install terraform
 
 # restart bash and check if terraform is successfully installed.
 terraform --version
@@ -76,7 +76,8 @@ terraform --help
 ```
 
 In case GPG error:
-See https://ebc-2in2crc.hatenablog.jp/entry/2020/01/22/120432
+If error message says `The following signatures were invalid: EXPKEYSIG <EXPIREdKEYSIGVALUE>`,
+run `apt-key adv --keyserver keys.gnupg.net --recv-keys <EXPIREdKEYSIGVALUE>` and then run `apt update`.
 #### for macOS
 
 ```bash
