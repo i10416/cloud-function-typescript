@@ -5,13 +5,18 @@
     "cp-package": "copyfiles package.json dist",
     "build": "run-s lint tsc cp-package"
   },
+   "keywords": [
+        "gcp",
+        "functions",
+        "typescript"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ItoYo16u/cloud-function-typescript"
   },
   "author": "ItoYo16u",
   "name": "cloud-function-typescript-template",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "node": ">=14.0.0"
   },
