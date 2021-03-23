@@ -33,7 +33,7 @@ python --version
 cd ~
 ```
 
-
+#### for linux
 download tar.gz
 
 ```bash
@@ -47,6 +47,10 @@ tar -zxvf google-cloud-sdk-329.0.0-linux-x86_64.tar.gz
 ./google-cloud-sdk/install.sh
 ./google-cloud-sdk/bin/gcloud init
 ```
+
+#### for macOS
+
+See google cloud official docs.
 
 ### Install dependencies
 
@@ -75,7 +79,6 @@ terraform --version
 terraform --help
 ```
 
-In case GPG error:
 If error message says `The following signatures were invalid: EXPKEYSIG <EXPIREdKEYSIGVALUE>`,
 run `apt-key adv --keyserver keys.gnupg.net --recv-keys <EXPIREdKEYSIGVALUE>` and then run `apt update`.
 #### for macOS
